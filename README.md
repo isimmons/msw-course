@@ -1,36 +1,9 @@
-# Welcome to Remix + Vite!
+# Starting Commit
 
-📖 See the [Remix docs](https://remix.run/docs) and the [Remix Vite docs](https://remix.run/docs/en/main/guides/vite) for details on supported features.
+For the course starting point I created a new updated remix project and copied over the routes/ui from Artem's starting project for the course.
 
-## Development
+There are some code changes due to changes in the latest remix version.
 
-Run the Vite dev server:
+Also react-icons all icons cause error "React does not recognize dataSlot" which is an attribute on the svgs. Changing it to dataslot myself in the package did not make a difference so after a while trying to solve the issue, I just removed react-icons and replaced it with @remixicon/react.
 
-```shellscript
-npm run dev
-```
-
-## Deployment
-
-First, build your app for production:
-
-```sh
-npm run build
-```
-
-Then run the app in production mode:
-
-```sh
-npm start
-```
-
-Now you'll need to pick a host to deploy it to.
-
-### DIY
-
-If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-- `build/server`
-- `build/client`
+There are probably still some issues but currently I am only getting errors that (as far as I can tell) are caused by the fact that we havn't started implementing api mock handlers yet.
