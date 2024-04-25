@@ -10,7 +10,7 @@ export function ErrorBanner({ displayText, error }: ErrorBannerProps) {
         {displayText}
       </p>
       <pre className="max-w-full text-sm whitespace-pre-wrap break-words">
-        {error.name}: {error.message}
+        Error: {error.message}
       </pre>
       <button className="button button-ghost mt-5 w-full">
         Report an issue
