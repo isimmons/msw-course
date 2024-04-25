@@ -22,6 +22,16 @@ export const handlers = [
     const url = new URL(request.url);
     const movieId = url.searchParams.get("movieId");
 
+    if (!movieId)
+      return HttpResponse.json(
+        { error: 'Missing query parameter "movieId' },
+        { status: 400 }
+      );
+
+    // simulate error for shawshank recommendations
+    if (movieId === "8061539f-f0d6-4187-843f-a25aadf948eb")
+      return new HttpResponse(null, { status: 500 });
+
     const recommendations = movies.filter((m) => m.id !== movieId);
 
     return HttpResponse.json(recommendations.slice(0, 2));
