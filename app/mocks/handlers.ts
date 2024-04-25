@@ -1,12 +1,20 @@
-import { http } from "msw";
+import { http, HttpResponse } from "msw";
 import { movies } from "./data";
 
 export const handlers = [
   http.get("https://api.example.com/movies/featured", () => {
-    return new Response(JSON.stringify(movies), {
-      headers: {
-        "Content-Type": "application/json",
-      },
+    return HttpResponse.json(movies);
+  }),
+
+  http.get("https://api.example.com/movies/:slug", ({ params }) => {
+    const { slug } = params;
+
+    const movie = movies.find((movie) => {
+      return movie.slug === slug;
     });
+
+    if (!movie) return new HttpResponse("Not found", { status: 404 });
+
+    return HttpResponse.json(movie);
   }),
 ];
