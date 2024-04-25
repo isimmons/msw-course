@@ -128,7 +128,7 @@ export default function MovieDetailPage() {
       </div>
 
       <div className="col-span-full">
-        <RecommendedMovies />
+        <RecommendedMovies movieId={movie.id} />
       </div>
     </div>
   );
