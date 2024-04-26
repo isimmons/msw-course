@@ -51,7 +51,7 @@ export function MovieReviewsList({ movieId }: MovieReviewListProps) {
         return cache;
       });
     }
-  }, [pendingReview, updateCache]);
+  }, [pendingReview]);
 
   return (
     <section className="mt-10">
