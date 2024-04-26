@@ -1,19 +1,19 @@
-import { useEffect } from 'react'
-import { useFetchers } from '@remix-run/react'
-import { gql } from 'graphql-request'
-import { useQuery } from '~/hooks/useQuery'
+import { useEffect } from "react";
+import { useFetchers } from "@remix-run/react";
+import { gql } from "graphql-request";
+import { useQuery } from "~/hooks/useQuery";
 import type {
   ListReviewQueryVariables,
   ListReviewsQuery,
   MovieReview,
-} from '~/types'
-import { getOptimisticData } from '~/utils/getOptimisticData'
-import { MovieReviewItem } from './movieReviewItem'
-import { MovieReviewForm } from './movieReviewForm'
-import { ErrorBanner } from './errorBanner'
+} from "~/types";
+import { getOptimisticData } from "~/utils/getOptimisticData";
+import { MovieReviewItem } from "./movieReviewItem";
+import { MovieReviewForm } from "./movieReviewForm";
+import { ErrorBanner } from "./errorBanner";
 
 interface MovieReviewListProps {
-  movieId: string
+  movieId: string;
 }
 
 export function MovieReviewsList({ movieId }: MovieReviewListProps) {
@@ -38,20 +38,20 @@ export function MovieReviewsList({ movieId }: MovieReviewListProps) {
       variables: {
         movieId,
       },
-    },
-  )
+    }
+  );
 
-  const fetchers = useFetchers()
-  const pendingReview = getOptimisticData<MovieReview>(fetchers[0])
+  const fetchers = useFetchers();
+  const pendingReview = getOptimisticData<MovieReview>(fetchers[0]);
 
   useEffect(() => {
     if (pendingReview) {
       updateCache((cache) => {
-        cache.reviews.push(pendingReview)
-        return cache
-      })
+        cache.reviews.push(pendingReview);
+        return cache;
+      });
     }
-  }, [pendingReview])
+  }, [pendingReview, updateCache]);
 
   return (
     <section className="mt-10">
@@ -80,5 +80,5 @@ export function MovieReviewsList({ movieId }: MovieReviewListProps) {
         <MovieReviewForm movieId={movieId} />
       </div>
     </section>
-  )
+  );
 }

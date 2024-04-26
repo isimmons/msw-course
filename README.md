@@ -47,3 +47,7 @@ http.get("/api/recommendations", async ({ request }) => {
     return HttpResponse.json(recommendations.slice(0, 2));
   }),
 ```
+
+## Graphql ?
+
+I don't know graphql but apparently have intercepted a graphql request and mocked the response. Guess I need to go learn some graphql...
