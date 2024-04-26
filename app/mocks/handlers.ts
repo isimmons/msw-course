@@ -1,4 +1,6 @@
 import { http, graphql, HttpResponse } from "msw";
+import { graphql as excuteGraphQL } from "graphql";
+import { schemas } from "./graphqlSchemas";
 import { movies } from "./data";
 
 export const handlers = [
@@ -64,17 +66,21 @@ export const handlers = [
       }
     }
    */
-  graphql.query("ListReviews", ({ variables }) => {
-    const { movieId } = variables;
-    const movie = movies.find((m) => m.id === movieId);
+  graphql.query("ListReviews", async ({ query, variables }) => {
+    const { errors, data } = await excuteGraphQL({
+      schema: schemas,
+      source: query,
+      variableValues: variables,
+      rootValue: {
+        reviews(args: { movieId: string }) {
+          const movie = movies.find((m) => m.id === args.movieId);
 
-    const reviews = movie?.reviews || [];
-
-    return HttpResponse.json({
-      data: {
-        reviews,
+          return movie?.reviews || [];
+        },
       },
     });
+
+    return HttpResponse.json({ errors, data });
   }),
 
   /**
