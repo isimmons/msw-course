@@ -1,4 +1,4 @@
-import { http, HttpResponse } from "msw";
+import { http, HttpResponse, delay } from "msw";
 import { movies } from "./data";
 
 export const handlers = [
@@ -18,9 +18,14 @@ export const handlers = [
     return HttpResponse.json(movie);
   }),
 
-  http.get("/api/recommendations", ({ request }) => {
+  http.get("/api/recommendations", async ({ request }) => {
     const url = new URL(request.url);
     const movieId = url.searchParams.get("movieId");
+
+    // delay can be used to simulate slow network, slow server responses
+    // accepts time in ms, mode ('real', 'infinite') or no args
+    // 'real' and no args default to a random realistic response time
+    // await delay(3000);
 
     // simulate network error, rejects with no status
     // not the same as a server side error
