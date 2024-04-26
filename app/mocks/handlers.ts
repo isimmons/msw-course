@@ -1,6 +1,7 @@
 import { http, graphql, HttpResponse } from "msw";
-import { graphql as excuteGraphQL } from "graphql";
+import { graphql as executeGraphQL } from "graphql";
 import { schemas } from "./graphqlSchemas";
+import type { Author, ReviewInput } from "./graphqlSchemas";
 import { movies } from "./data";
 
 export const handlers = [
@@ -53,71 +54,49 @@ export const handlers = [
     });
   }),
 
-  /**
-  query ListReviews($movieId: ID!) {
-      reviews(movieId: $movieId) {
-        id
-        text
-        rating
-        author {
-          firstName
-          avatarUrl
-        }
-      }
-    }
-   */
-  graphql.query("ListReviews", async ({ query, variables }) => {
-    const { errors, data } = await excuteGraphQL({
+  graphql.operation(async ({ query, variables }) => {
+    const { errors, data } = await executeGraphQL({
       schema: schemas,
       source: query,
       variableValues: variables,
       rootValue: {
         reviews(args: { movieId: string }) {
-          const movie = movies.find((m) => m.id === args.movieId);
+          const movie = movies.find((movie) => {
+            return movie.id === args.movieId;
+          });
+
+          if (!movie) {
+            throw new Error(`Cannot find a movie by ID "${args.movieId}"`);
+          }
 
           return movie?.reviews || [];
+        },
+        addReview(args: { author: Author; reviewInput: ReviewInput }) {
+          const { author, reviewInput } = args;
+          const { movieId, ...review } = reviewInput;
+
+          const movie = movies.find((movie) => {
+            return movie.id === movieId;
+          });
+
+          if (!movie) {
+            throw new Error(`Cannot find a movie by ID "${movieId}"`);
+          }
+
+          const newReview = {
+            ...review,
+            id: Math.random().toString(16).slice(2),
+            author,
+          };
+
+          const prevReviews = movie.reviews || [];
+          movie.reviews = prevReviews.concat(newReview);
+
+          return newReview;
         },
       },
     });
 
     return HttpResponse.json({ errors, data });
-  }),
-
-  /**
-  mutation AddReview($author: UserInput!, $reviewInput: ReviewInput!) {
-    addReview(author: $author, reviewInput: $reviewInput) {
-      id
-      text
-      author {
-        id
-        firstName
-        avatarUrl
-      }
-    }
-  }
-   */
-  graphql.mutation("AddReview", ({ variables }) => {
-    const { author, reviewInput } = variables;
-    const { movieId, ...review } = reviewInput;
-    const movie = movies.find((m) => m.id === movieId);
-
-    if (!movie)
-      return HttpResponse.json({ errors: [{ message: "Movie not found " }] });
-
-    const newReview = {
-      ...review,
-      id: Math.random().toString(16).slice(2),
-      author,
-    };
-
-    const prevReviews = movie.reviews || [];
-
-    movie.reviews = prevReviews.concat(newReview);
-
-    return HttpResponse.json({
-      data: {
-        addReview: newReview,
-      },
-    });
   }),
 ];
