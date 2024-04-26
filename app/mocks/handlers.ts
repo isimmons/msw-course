@@ -1,4 +1,4 @@
-import { http, HttpResponse, delay } from "msw";
+import { http, HttpResponse } from "msw";
 import { movies } from "./data";
 
 export const handlers = [
@@ -22,31 +22,17 @@ export const handlers = [
     const url = new URL(request.url);
     const movieId = url.searchParams.get("movieId");
 
-    // delay can be used to simulate slow network, slow server responses
-    // accepts time in ms, mode ('real', 'infinite') or no args
-    // 'real' and no args default to a random realistic response time
-    await delay(2000);
-
-    // simulate network error, rejects with no status
-    // not the same as a server side error
-    // return HttpResponse.error();
-
     if (!movieId)
       return HttpResponse.json(
         { error: 'Missing query parameter "movieId' },
         { status: 400 }
       );
 
-    // simulate error for shawshank recommendations
-    // if (movieId === "8061539f-f0d6-4187-843f-a25aadf948eb")
-    //   return new HttpResponse(null, { status: 500 });
-
     const recommendations = movies.filter((m) => m.id !== movieId);
 
     return HttpResponse.json(recommendations.slice(0, 2));
   }),
 
-  // authentication mock
   http.post("https://auth.provider.com/authenticate", async ({ request }) => {
     const data = await request.formData();
     const email = data.get("email");
