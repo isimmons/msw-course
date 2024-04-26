@@ -22,7 +22,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const redirectUrl = (data.get("redirectUrl") as string) || "/";
 
   // Validate the user credentials.
-  const user = await fetch("https://auth.provider.com/validate", {
+  const user = await fetch("https://auth.provider.com/authenticate", {
     method: "POST",
     body: data,
   }).then(
