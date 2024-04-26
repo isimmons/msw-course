@@ -22,6 +22,10 @@ export const handlers = [
     const url = new URL(request.url);
     const movieId = url.searchParams.get("movieId");
 
+    // simulate network error, rejects with no status
+    // not the same as a server side error
+    // return HttpResponse.error();
+
     if (!movieId)
       return HttpResponse.json(
         { error: 'Missing query parameter "movieId' },
@@ -29,8 +33,8 @@ export const handlers = [
       );
 
     // simulate error for shawshank recommendations
-    if (movieId === "8061539f-f0d6-4187-843f-a25aadf948eb")
-      return new HttpResponse(null, { status: 500 });
+    // if (movieId === "8061539f-f0d6-4187-843f-a25aadf948eb")
+    //   return new HttpResponse(null, { status: 500 });
 
     const recommendations = movies.filter((m) => m.id !== movieId);
 
