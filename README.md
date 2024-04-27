@@ -42,6 +42,15 @@ http.get("/api/recommendations", async ({ request }) => {
     // if (movieId === "8061539f-f0d6-4187-843f-a25aadf948eb")
     //   return new HttpResponse(null, { status: 500 });
 
+    // import passthrough from msw and use it to
+    // conditionally observe but not respond
+    // this way msw will not respond but instead
+    // will let the request pass through
+    // so the real data will be returned.
+    // if( movieId === "8061539f-f0d6-4187-843f-a25aadf948eb") {
+    //   return passthrough()
+    // }
+
     const recommendations = movies.filter((m) => m.id !== movieId);
 
     return HttpResponse.json(recommendations.slice(0, 2));
