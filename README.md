@@ -51,3 +51,7 @@ http.get("/api/recommendations", async ({ request }) => {
 ## Graphql ?
 
 I don't know graphql but apparently have intercepted a graphql request and mocked the response. Guess I need to go learn some graphql...
+
+## MSW order of operation
+
+MSW executes requests in order. Notice the customerService handler is listed before the more permisive graphql.operation handler. This will ensure that graphql querries to the customerService are resolved first.

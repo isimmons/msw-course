@@ -1,8 +1,10 @@
-import { http, graphql, HttpResponse } from "msw";
 import { graphql as executeGraphQL } from "graphql";
-import { schemas } from "./graphqlSchemas";
-import type { Author, ReviewInput } from "./graphqlSchemas";
+import { HttpResponse, graphql, http } from "msw";
 import { movies } from "./data";
+import type { Author, ReviewInput } from "./graphqlSchemas";
+import { schemas } from "./graphqlSchemas";
+
+const customerService = graphql.link("https://api.example.com/review-service");
 
 export const handlers = [
   http.get("https://api.example.com/movies/featured", () => {
@@ -51,6 +53,19 @@ export const handlers = [
       firstName: "John",
       lastName: "Maverick",
       avatarUrl: "https://i.pravatar.cc/100?img=12",
+    });
+  }),
+
+  customerService.query("ListReviews", () => {
+    return HttpResponse.json({
+      data: {
+        serviceReviews: [
+          {
+            id: "04be0fb5-19f6-411c-9257-bcef6cd203c2",
+            message: "Hello World",
+          },
+        ],
+      },
     });
   }),
 
