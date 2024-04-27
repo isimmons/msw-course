@@ -1,5 +1,5 @@
 import { graphql as executeGraphQL } from "graphql";
-import { HttpResponse, graphql, http } from "msw";
+import { HttpResponse, bypass, graphql, http } from "msw";
 import { movies } from "./data";
 import type { Author, ReviewInput } from "./graphqlSchemas";
 import { schemas } from "./graphqlSchemas";
@@ -7,6 +7,13 @@ import { schemas } from "./graphqlSchemas";
 const customerService = graphql.link("https://api.example.com/review-service");
 
 export const handlers = [
+  http.get("http://localhost:5173/api/featured", async ({ request }) => {
+    const response = await fetch(bypass(request));
+    const originalMovies = await response.json();
+
+    return HttpResponse.json(originalMovies.concat(movies));
+  }),
+
   http.get("https://api.example.com/movies/featured", () => {
     return HttpResponse.json(movies);
   }),

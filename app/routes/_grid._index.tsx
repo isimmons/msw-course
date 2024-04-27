@@ -5,7 +5,8 @@ import type { FeaturedMovie } from "~/types";
 
 export async function loader() {
   const featuredMovies = await fetch(
-    "https://api.example.com/movies/featured"
+    // "https://api.example.com/movies/featured"
+    "http://localhost:5173/api/featured"
   ).then<Array<FeaturedMovie>>((response) => response.json());
 
   return {
