@@ -64,3 +64,9 @@ I don't know graphql but apparently have intercepted a graphql request and mocke
 ## MSW order of operation
 
 MSW executes requests in order. Notice the customerService handler is listed before the more permisive graphql.operation handler. This will ensure that graphql querries to the customerService are resolved first.
+
+## Combine api and mock responses
+
+In the handler for api/featured we use bypass from MSW to run the real fetch but stop MSW from getting in a loop, trying to respond to the detected fetch request. In this way we can get the real data from the real api call and then combine it with mock data.
+
+I added the api.featured.tsx route and changed the loader function in `_grid._index.tsx` to call the real api route for movies. So MSW intercepts and runs this fetch to get originalMovies and then combines them with mocked movies for the returned json response.

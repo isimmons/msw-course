@@ -1,5 +1,5 @@
 import { graphql as executeGraphQL } from "graphql";
-import { HttpResponse, bypass, graphql, http } from "msw";
+import { HttpResponse, bypass, delay, graphql, http } from "msw";
 import { movies } from "./data";
 import type { Author, ReviewInput } from "./graphqlSchemas";
 import { schemas } from "./graphqlSchemas";
@@ -7,6 +7,27 @@ import { schemas } from "./graphqlSchemas";
 const customerService = graphql.link("https://api.example.com/review-service");
 
 export const handlers = [
+  http.get("https://api.example.com/movies/:slug/stream", async () => {
+    const videoResponse = await fetch(
+      "https://nickdesaulniers.github.io/netfix/demo/frag_bunny.mp4"
+    );
+    const videoStream = videoResponse.body;
+    if (!videoStream) return new HttpResponse("Not found", { status: 404 });
+
+    const latencyStream = new TransformStream({
+      start() {},
+      async transform(chunk, controller) {
+        await delay(1500);
+        controller.enqueue(chunk);
+      },
+    });
+
+    return new HttpResponse(
+      videoStream.pipeThrough(latencyStream),
+      videoResponse
+    );
+  }),
+
   http.get("http://localhost:5173/api/featured", async ({ request }) => {
     const response = await fetch(bypass(request));
     const originalMovies = await response.json();

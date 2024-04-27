@@ -1,16 +1,15 @@
 import {
+  redirect,
   type LoaderFunctionArgs,
   type MetaArgs,
-  redirect,
 } from "@remix-run/node";
 import { Link, useLoaderData, useNavigate } from "@remix-run/react";
-import { useEffect, useRef, useState } from "react";
 import {
   RiCloseCircleLine as CloseIcon,
-  RiPlayCircleLine as PlayIcon,
   RiPauseCircleLine as PauseIcon,
+  RiPlayCircleLine as PlayIcon,
 } from "@remixicon/react";
-import type { Movie } from "~/types";
+import { useEffect, useRef, useState } from "react";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const { slug } = params;
@@ -19,13 +18,13 @@ export async function loader({ params }: LoaderFunctionArgs) {
     throw redirect("/movies");
   }
 
-  const movie: Movie = await fetch(`https://api.example.com/movies/${slug}`)
+  const movie = await fetch(`https://api.example.com/movies/${slug}`)
     .then((response) => response.json())
     .catch((error) => {
       if (error) throw redirect("/movies");
     });
 
-  // const movie = (await movieResponse.json()) as Movie
+  // const movie = (await movieResponse.json()) as Movie;
 
   return {
     movie,
