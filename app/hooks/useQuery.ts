@@ -1,48 +1,48 @@
-import { useState, useEffect } from 'react'
-import { request } from 'graphql-request'
+import { request } from "graphql-request";
+import { useEffect, useState } from "react";
 
 interface QueryOptions<VariablesType extends Record<string, any>> {
-  variables?: VariablesType
+  variables?: VariablesType;
 }
 
 type QueryState<QueryType extends Record<string, any>> =
   | {
-      loading: true
-      data: null
-      error: null
+      loading: true;
+      data: null;
+      error: null;
     }
   | {
-      loading: false
-      data: QueryType
-      error: null
+      loading: false;
+      data: QueryType;
+      error: null;
     }
   | {
-      loading: false
-      data: null
-      error: Error
-    }
+      loading: false;
+      data: null;
+      error: Error;
+    };
 
 export function useQuery<
   QueryType extends Record<string, any>,
-  VariablesType extends Record<string, any> = {},
+  VariablesType extends Record<string, any> = {}
 >(
   query: string,
-  options?: QueryOptions<VariablesType>,
+  options?: QueryOptions<VariablesType>
 ): [
   QueryState<QueryType>,
   {
-    updateCache: (updateFn: (data: QueryType) => QueryType) => void
-  },
+    updateCache: (updateFn: (data: QueryType) => QueryType) => void;
+  }
 ] {
   const [state, setState] = useState<QueryState<QueryType>>({
     loading: true,
     data: null,
     error: null,
-  })
+  });
 
   useEffect(() => {
     request<QueryType>({
-      url: 'http://localhost:3000',
+      url: "http://localhost:5173",
       document: query,
       variables: options?.variables,
     }).then(
@@ -51,58 +51,58 @@ export function useQuery<
           loading: false,
           data,
           error: null,
-        })
+        });
       },
       (error) => {
         setState({
           loading: false,
           error: error.response.errors[0],
           data: null,
-        })
-      },
-    )
-  }, [])
+        });
+      }
+    );
+  }, []);
 
   return [
     state,
     {
       updateCache(updateFn) {
         if (!state.loading && !state.error) {
-          setState({ ...state, data: updateFn(state.data) })
+          setState({ ...state, data: updateFn(state.data) });
         }
       },
     },
-  ]
+  ];
 }
 
 interface MutationOptions<VariablesType extends Record<string, any>> {
-  variables?: VariablesType
+  variables?: VariablesType;
 }
 
 type MutationState<MutationType extends Record<string, any>> =
   | {
-      data: MutationType
-      error: null
+      data: MutationType;
+      error: null;
     }
   | {
-      data: null
-      error: Error
-    }
+      data: null;
+      error: Error;
+    };
 
 export function mutate<
   MutationType extends Record<string, any>,
-  VariablesType extends Record<string, any> = {},
+  VariablesType extends Record<string, any> = {}
 >(mutation: string) {
   return (
-    options?: MutationOptions<VariablesType>,
+    options?: MutationOptions<VariablesType>
   ): Promise<MutationState<MutationType>> => {
     return request<MutationType>({
-      url: 'http://localhost:3000',
+      url: "http://localhost:5173",
       document: mutation,
       variables: options?.variables,
     }).then(
       (data) => ({ data, error: null }),
-      (error) => ({ data: null, error }),
-    )
-  }
+      (error) => ({ data: null, error })
+    );
+  };
 }
