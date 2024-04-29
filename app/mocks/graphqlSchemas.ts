@@ -44,22 +44,3 @@ export const schemas = buildSchema(`
     addReview(author: UserInput!, reviewInput: ReviewInput!): Review
   }
 `);
-
-export type Author = {
-  id: string;
-  firstName: string;
-  avatarUrl: string;
-};
-
-export type ReviewInput = {
-  movieId: string;
-  text: string;
-  rating: number;
-};
-
-export type Review = {
-  id: string;
-  author: Author;
-  text: string;
-  rating: number;
-};
